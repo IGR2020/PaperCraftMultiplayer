@@ -21,7 +21,6 @@ class GameServer(Server):
         self.clientData[address]["Allocation"] = []
 
     def tick(self):
-        sleep(1)
         for address in self.clientData:
             for allocation in self.clientData[address]["Allocation"]:
                 if not allocation in self.mass.keys():
