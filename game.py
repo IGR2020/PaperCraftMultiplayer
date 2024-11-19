@@ -141,13 +141,16 @@ class Server:
 
 
 def sendData(connection, data):
-    data = saveStream(data)
-    dataSize = str(len(data)).encode()
-    if len(dataSize) > header:
-        raise ValueError("Data Size Too Large")
-    dataSize += (header - len(dataSize)) * " ".encode()
-    connection.send(dataSize)
-    connection.send(data)
+    try:
+        data = saveStream(data)
+        dataSize = str(len(data)).encode()
+        if len(dataSize) > header:
+            raise ValueError("Data Size Too Large")
+        dataSize += (header - len(dataSize)) * " ".encode()
+        connection.send(dataSize)
+        connection.send(data)
+    except ConnectionAbortedError and ConnectionResetError:
+        return "Invalid"
 
 def getData(connection):
     try:

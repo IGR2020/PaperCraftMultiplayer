@@ -8,7 +8,7 @@ class Block:
         self.name = name
 
     def display(self, window: pg.Surface, x_offset: int, y_offset: int):
-        window.blit(assets[self.name], (self.rect.x, self.rect.y))
+        window.blit(assets[self.name], (self.rect.x - x_offset, self.rect.y - y_offset))
 
 def collide(obj, player):
     return obj.rect.colliderect(player.rect)
