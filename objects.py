@@ -1,5 +1,5 @@
 import pygame as pg
-from assets import assets, blockSize, playerSize
+from assets import assets, blockSize, playerSize, massSize, playerSprintSpeed, maxPlayerSpeed
 
 
 class Block:
@@ -24,21 +24,34 @@ class Player:
         window.blit(assets[self.name], (self.rect.x - x_offset, self.rect.y - y_offset))
 
     def script(self):
-        self.x_vel = 0
+        try:
+            self.x_vel -= self.x_vel / abs(self.x_vel) * 0.5
+            print(self.x_vel)
+        except ZeroDivisionError:
+            self.x_vel = 0
         self.y_vel += 0.2
 
         keys = pg.key.get_pressed()
-        if keys[pg.K_a]:
+        if keys[pg.K_a] and self.x_vel > -playerSprintSpeed:
             self.x_vel -= 3
-        if keys[pg.K_d]:
+        if keys[pg.K_d] and self.x_vel < playerSprintSpeed:
             self.x_vel += 3
         if keys[pg.K_SPACE] and self.jumpCount == 0:
-            self.y_vel = -5
-            self.jumpCount = 1
+            self.jump()
+
+        self.x_vel = max(min(self.x_vel, maxPlayerSpeed), -maxPlayerSpeed)
+
+    def jump(self):
+        self.y_vel = -5
+        self.jumpCount = 1
+        self.x_vel *= 1.5
 
     def land(self):
         self.y_vel = 0
         self.jumpCount = 0
+
+    def hitHead(self):
+        self.y_vel = 0
 
     def collide(self, mass: dict[tuple[int, int], dict[tuple[int, int], Block]], allocation: list[tuple[int, int]]):
 
@@ -75,6 +88,7 @@ class Player:
                             self.land()
                         else:
                             self.rect.top = obj.rect.bottom
+                            self.hitHead()
                         break
                 except KeyError:
                     break
