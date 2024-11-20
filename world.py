@@ -1,3 +1,4 @@
+
 import pygame as pg
 from perlin_noise import PerlinNoise
 from assets import massSize, blockSize

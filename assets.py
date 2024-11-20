@@ -17,5 +17,5 @@ massSendStyle = "{'type': 'Mass', 'Mass': ((0, 0), Blocks)}"
 defaultPlayerArgs = (0, -30, "Player")
 blockReferenceStyle = "(massCoord, blockCoord)"
 
-maxPlayerSpeed = 5
-playerSprintSpeed = 3
+maxPlayerSpeed = 20
+playerSprintSpeed = 4

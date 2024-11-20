@@ -25,17 +25,16 @@ class Player:
 
     def script(self):
         try:
-            self.x_vel -= self.x_vel / abs(self.x_vel) * 0.5
-            print(self.x_vel)
+            self.x_vel -= self.x_vel / abs(self.x_vel) * 0.2
         except ZeroDivisionError:
             self.x_vel = 0
         self.y_vel += 0.2
 
         keys = pg.key.get_pressed()
-        if keys[pg.K_a] and self.x_vel > -playerSprintSpeed:
-            self.x_vel -= 3
-        if keys[pg.K_d] and self.x_vel < playerSprintSpeed:
-            self.x_vel += 3
+        if keys[pg.K_a]:
+            self.x_vel += min(-playerSprintSpeed - self.x_vel, 0)
+        if keys[pg.K_d]:
+            self.x_vel += max(playerSprintSpeed - self.x_vel, 0)
         if keys[pg.K_SPACE] and self.jumpCount == 0:
             self.jump()
 
@@ -44,7 +43,7 @@ class Player:
     def jump(self):
         self.y_vel = -5
         self.jumpCount = 1
-        self.x_vel *= 1.5
+        self.x_vel *= 2
 
     def land(self):
         self.y_vel = 0

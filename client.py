@@ -88,8 +88,8 @@ class GameClient(Client):
                         break
 
     def tick(self) -> None:
-        sendData(self.connection, {"Allocation": self.allocation, "Type": "Allocation"})
-        sendData(self.connection, {"Type": "Player", "Player": self.player})
+        Thread(target=sendData, args=(self.connection, {"Allocation": self.allocation, "Type": "Allocation"})).start()
+        Thread(target=sendData, args=(self.connection, {"Type": "Player", "Player": self.player})).start()
 
         self.player.script()
         self.player.collide(self.mass, self.allocation)
@@ -104,10 +104,10 @@ class GameClient(Client):
                 mouseX // blockSize, mouseY // blockSize)
 
             if mouseDown[0]:
-                sendData(self.connection, {"Type": "Left Click", "Address": (massAddress, blockAddress)})
+                Thread(target=sendData, args=(self.connection, {"Type": "Left Click", "Address": (massAddress, blockAddress)})).start()
 
             if mouseDown[2]:
-                sendData(self.connection, {"Type": "Right Click", "Address": (massAddress, blockAddress)})
+                Thread(target=sendData, args=(self.connection, {"Type": "Right Click", "Address": (massAddress, blockAddress)})).start()
 
         self.x_offset, self.y_offset = self.player.rect.centerx - self.width/2, self.player.rect.centery - self.height/2
 

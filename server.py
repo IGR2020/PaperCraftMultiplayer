@@ -2,7 +2,6 @@ from perlin_noise import PerlinNoise
 
 from assets import defaultPlayerArgs, blockSize
 from game import Server, sendData
-from time import sleep, time
 
 from objects import Player, Block
 from world import createMass
@@ -17,6 +16,8 @@ class GameServer(Server):
 
         self.tickStep = 0
 
+        self.updatedMass = []
+
     def handleSentPacket(self, data, address):
         if data["Type"] == "Allocation":
             self.clientData[address]["Allocation"] = data["Allocation"]
@@ -26,6 +27,7 @@ class GameServer(Server):
         elif data["Type"] == "Left Click":
             try:
                 del self.mass[data["Address"][0]][data["Address"][1]]
+                self.updatedMass.append(data["Address"][0])
             except KeyError:
                 pass
         elif data["Type"] == "Right Click":
@@ -34,6 +36,7 @@ class GameServer(Server):
             except KeyError:
                 try:
                     self.mass[data["Address"][0]][data["Address"][1]] = Block(data["Address"][1][0]*blockSize, data["Address"][1][1]*blockSize, "Stone")
+                    self.updatedMass.append(data["Address"][0])
                 except KeyError:
                     pass
 
@@ -57,14 +60,18 @@ class GameServer(Server):
             return
 
         for address in addresses:
-            for allocation in self.clientData[address]["Allocation"]:
-                if not allocation in self.mass.keys():
-                    self.mass[allocation] = createMass(self.noise, allocation, 0.02, 30)
-                try:
-                    sendData(self.clientData[address]["Socket"], {"Mass": (allocation, self.mass[allocation]), "Type": "Mass"})
-                except KeyError:
-                    pass
-
+            try:
+                for allocation in self.clientData[address]["Allocation"]:
+                    try:
+                        self.mass[allocation]
+                    except KeyError:
+                        self.mass[allocation] = createMass(self.noise, allocation, 0.02, 30)
+                        self.updatedMass.append(allocation)
+                    if allocation in self.updatedMass:
+                        sendData(self.clientData[address]["Socket"], {"Mass": (allocation, self.mass[allocation]), "Type": "Mass"})
+            except KeyError:
+                pass
+        self.updatedMass = []
         self.tickStep = 0
 
 GameServer().start()
