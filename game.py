@@ -103,10 +103,12 @@ class Server:
 
     def clientJoinHandler(self):
         self.serverSocket.listen()
+        print("[Server] Accepting Clients")
 
         while self.run:
 
             connection, address = self.serverSocket.accept()
+            print(f"[Server] {address} Has Joined")
             self.clientData[address] = {}
             self.clientData[address]["Socket"] = connection
             self.assignClientData(address)
@@ -124,6 +126,7 @@ class Server:
             if data == "Invalid":
                 continue
             if data == "Quit":
+                print(f"[Server] {address} Has Left")
                 del self.clientData[address]
                 return
             self.handleSentPacket(data, address)
