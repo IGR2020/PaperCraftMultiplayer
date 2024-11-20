@@ -34,7 +34,9 @@ class GameServer(Server):
         addresses = list(self.clientData.keys())
         for address in addresses:
             try:
-                sendData(self.clientData[address]["Socket"], {"Type": "Players", "Players": [self.clientData[client]["Player"] for client in addresses]})
+                output = sendData(self.clientData[address]["Socket"], {"Type": "Players", "Players": [self.clientData[client]["Player"] for client in addresses]})
+                if output == "Invalid":
+                    del self.clientData[address]
             except KeyError:
                 pass
 

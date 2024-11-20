@@ -45,7 +45,7 @@ class GameClient(Client):
             (self.x_offset // blockSize // massSize + 1,
              self.y_offset // blockSize // massSize + 1),
             (self.x_offset // blockSize // massSize,
-             self.y_offset // blockSize // massSize + 1), ]
+             self.y_offset // blockSize // massSize + 1)]
 
     def display(self):
         massKeys = list(self.mass.keys())
@@ -90,11 +90,7 @@ class GameClient(Client):
         self.player.script()
         self.player.collide(self.mass, self.allocation)
 
-        mouseDown = pg.mouse.get_pressed()
-        relX, relY = pg.mouse.get_rel()
-        if True in mouseDown:
-            self.x_offset -= relX
-            self.y_offset -= relY
+        self.x_offset, self.y_offset = self.player.rect.centerx - self.width/2, self.player.rect.centery - self.height/2
 
         self.allocation = [
             (self.x_offset // blockSize // massSize,
