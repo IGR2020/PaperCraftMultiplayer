@@ -23,6 +23,11 @@ class GameServer(Server):
         elif data["Type"] == "Player":
             self.clientData[address]["Player"] = data["Player"]
             self.clientData[address]["Player"].id = address
+        elif data["Type"] == "Left Click":
+            try:
+                del self.mass[data["Address"][0]][data["Address"][1]]
+            except KeyError:
+                pass
 
     def assignClientData(self, address):
         self.clientData[address]["Allocation"] = []

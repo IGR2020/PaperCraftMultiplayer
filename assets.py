@@ -15,3 +15,4 @@ massSize = 16
 
 massSendStyle = "{'type': 'Mass', 'Mass': ((0, 0), Blocks)}"
 defaultPlayerArgs = (0, -30, "Player")
+blockReferenceStyle = "(massCoord, blockCoord)"

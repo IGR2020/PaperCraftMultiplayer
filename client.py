@@ -2,6 +2,7 @@ from random import randint
 from threading import Thread
 from time import sleep
 
+
 from assets import blockSize, massSize, defaultPlayerArgs
 from game import Client, sendData
 from objects import Block, Player
@@ -52,7 +53,10 @@ class GameClient(Client):
         for mass in massKeys:
             blockKeys = list(self.mass[mass].keys())
             for block in blockKeys:
-                self.mass[mass][block].display(self.window, self.x_offset, self.y_offset)
+                try:
+                    self.mass[mass][block].display(self.window, self.x_offset, self.y_offset)
+                except KeyError:
+                    pass
 
         for player in self.allPlayers:
             player.display(self.window, self.x_offset, self.y_offset)
@@ -89,6 +93,16 @@ class GameClient(Client):
 
         self.player.script()
         self.player.collide(self.mass, self.allocation)
+
+        mouseDown = pg.mouse.get_pressed()
+        mouseX, mouseY = pg.mouse.get_pos()
+        mouseX += self.x_offset
+        mouseY += self.y_offset
+
+        if mouseDown[0]:
+            massAddress, blockAddress = (mouseX // blockSize // massSize, mouseY // blockSize // massSize), (
+                mouseX // blockSize, mouseY // blockSize)
+            sendData(self.connection, {"Type": "Left Click", "Address": (massAddress, blockAddress)})
 
         self.x_offset, self.y_offset = self.player.rect.centerx - self.width/2, self.player.rect.centery - self.height/2
 
