@@ -93,23 +93,23 @@ class GameClient(Client):
         self.x_offset, self.y_offset = self.player.rect.centerx - self.width/2, self.player.rect.centery - self.height/2
 
         self.allocation = [
-            (self.x_offset // blockSize // massSize,
-             self.y_offset // blockSize // massSize),
-            (self.x_offset // blockSize // massSize + 1,
-             self.y_offset // blockSize // massSize),
-            (self.x_offset // blockSize // massSize - 1,
-             self.y_offset // blockSize // massSize),
-            (self.x_offset // blockSize // massSize - 1,
-             self.y_offset // blockSize // massSize - 1),
-            (self.x_offset // blockSize // massSize + 1,
-             self.y_offset // blockSize // massSize - 1),
-            (self.x_offset // blockSize // massSize,
-             self.y_offset // blockSize // massSize - 1),
-            (self.x_offset // blockSize // massSize - 1,
-             self.y_offset // blockSize // massSize + 1),
-            (self.x_offset // blockSize // massSize + 1,
-             self.y_offset // blockSize // massSize + 1),
-            (self.x_offset // blockSize // massSize,
-             self.y_offset // blockSize // massSize + 1), ]
+            (self.player.rect.centerx // blockSize // massSize,
+             self.player.rect.centery // blockSize // massSize),
+            (self.player.rect.centerx // blockSize // massSize + 1,
+             self.player.rect.centery // blockSize // massSize),
+            (self.player.rect.centerx // blockSize // massSize - 1,
+             self.player.rect.centery // blockSize // massSize),
+            (self.player.rect.centerx // blockSize // massSize - 1,
+             self.player.rect.centery // blockSize // massSize - 1),
+            (self.player.rect.centerx // blockSize // massSize + 1,
+             self.player.rect.centery // blockSize // massSize - 1),
+            (self.player.rect.centerx // blockSize // massSize,
+             self.player.rect.centery // blockSize // massSize - 1),
+            (self.player.rect.centerx // blockSize // massSize - 1,
+             self.player.rect.centery // blockSize // massSize + 1),
+            (self.player.rect.centerx // blockSize // massSize + 1,
+             self.player.rect.centery // blockSize // massSize + 1),
+            (self.player.rect.centerx // blockSize // massSize,
+             self.player.rect.centery // blockSize // massSize + 1), ]
 
 GameClient((900, 500), "Client", "Local").start()
