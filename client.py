@@ -99,10 +99,15 @@ class GameClient(Client):
         mouseX += self.x_offset
         mouseY += self.y_offset
 
-        if mouseDown[0]:
+        if True in mouseDown:
             massAddress, blockAddress = (mouseX // blockSize // massSize, mouseY // blockSize // massSize), (
                 mouseX // blockSize, mouseY // blockSize)
-            sendData(self.connection, {"Type": "Left Click", "Address": (massAddress, blockAddress)})
+
+            if mouseDown[0]:
+                sendData(self.connection, {"Type": "Left Click", "Address": (massAddress, blockAddress)})
+
+            if mouseDown[2]:
+                sendData(self.connection, {"Type": "Right Click", "Address": (massAddress, blockAddress)})
 
         self.x_offset, self.y_offset = self.player.rect.centerx - self.width/2, self.player.rect.centery - self.height/2
 

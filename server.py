@@ -1,10 +1,10 @@
 from perlin_noise import PerlinNoise
 
-from assets import defaultPlayerArgs
+from assets import defaultPlayerArgs, blockSize
 from game import Server, sendData
 from time import sleep, time
 
-from objects import Player
+from objects import Player, Block
 from world import createMass
 
 
@@ -28,6 +28,14 @@ class GameServer(Server):
                 del self.mass[data["Address"][0]][data["Address"][1]]
             except KeyError:
                 pass
+        elif data["Type"] == "Right Click":
+            try:
+                self.mass[data["Address"][0]][data["Address"][1]]
+            except KeyError:
+                try:
+                    self.mass[data["Address"][0]][data["Address"][1]] = Block(data["Address"][1][0]*blockSize, data["Address"][1][1]*blockSize, "Stone")
+                except KeyError:
+                    pass
 
     def assignClientData(self, address):
         self.clientData[address]["Allocation"] = []
