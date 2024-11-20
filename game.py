@@ -39,6 +39,9 @@ class Client:
             data = getData(self.connection)
             if data == "Invalid":
                 continue
+            if data == "Quit":
+                self.run = False
+                quit()
             self.handleReceivedData(data)
 
     def handleReceivedData(self, data):

@@ -12,16 +12,19 @@ class Block:
 
 
 class Player:
-    def __init__(self, x: int, y: int, name: str):
+    def __init__(self, x: int, y: int, name: str, playerId: str):
         self.rect = pg.Rect(x, y, playerSize[0], playerSize[1])
         self.name = name
         self.x_vel = 0
         self.y_vel = 0
+        self.id = playerId
 
     def display(self, window: pg.Surface, x_offset: int, y_offset: int):
         window.blit(assets[self.name], (self.rect.x - x_offset, self.rect.y - y_offset))
 
     def script(self):
+        self.x_vel = 0
+
         keys = pg.key.get_pressed()
         if keys[pg.K_a]:
             self.x_vel -= 3

@@ -2,9 +2,9 @@ from random import randint
 from threading import Thread
 from time import sleep
 
-from assets import blockSize, massSize
+from assets import blockSize, massSize, defaultPlayerArgs
 from game import Client, sendData
-from objects import Block
+from objects import Block, Player
 import pygame as pg
 
 
@@ -22,7 +22,10 @@ class GameClient(Client):
         self.x_offset, self.y_offset = 0, 0
         self.mass = {}
 
-        self.players = {}
+        self.player = Player(*defaultPlayerArgs, "ClientRun")
+        self.allPlayers = []
+
+        self.playerId = None
 
         self.allocation = [
             (self.x_offset // blockSize // massSize,
@@ -51,6 +54,11 @@ class GameClient(Client):
             for block in blockKeys:
                 self.mass[mass][block].display(self.window, self.x_offset, self.y_offset)
 
+        for player in self.allPlayers:
+            player.display(self.window, self.x_offset, self.y_offset)
+
+        self.player.display(self.window, self.x_offset, self.y_offset)
+
     def quit(self):
         sendData(self.connection, "Quit")
         sleep(0.1)
@@ -59,10 +67,28 @@ class GameClient(Client):
     def handleReceivedData(self, data):
         if data["Type"] == "Mass":
             self.mass[data["Mass"][0]] = data["Mass"][1]
+        elif data["Type"] == "Players":
+            self.allPlayers: list[Player] = data["Players"]
+
+            if self.playerId is not None:
+                for player in self.allPlayers:
+                    if player.id == self.playerId:
+                        self.allPlayers.remove(player)
+                        break
+
+            else:
+                for player in self.allPlayers:
+                    if player.rect.topleft == self.player.rect.topleft:
+                        self.playerId = player.id
+                        self.allPlayers.remove(player)
+                        break
 
     def tick(self) -> None:
-        if randint(0, self.fps) == 0:
-            sendData(self.connection, {"Allocation": self.allocation, "Type": "Allocation"})
+        sendData(self.connection, {"Allocation": self.allocation, "Type": "Allocation"})
+        sendData(self.connection, {"Type": "Player", "Player": self.player})
+
+        self.player.script()
+        self.player.collide(self.mass, self.allocation)
 
         mouseDown = pg.mouse.get_pressed()
         relX, relY = pg.mouse.get_rel()
