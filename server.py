@@ -21,13 +21,15 @@ class GameServer(Server):
         self.clientData[address]["Allocation"] = []
 
     def tick(self):
-        for address in self.clientData:
+        addresses = list(self.clientData.keys())
+        for address in addresses:
             for allocation in self.clientData[address]["Allocation"]:
                 if not allocation in self.mass.keys():
                     self.mass[allocation] = createMass(self.noise, allocation, 0.02, 30)
                 output = sendData(self.clientData[address]["Socket"], {"Mass": (allocation, self.mass[allocation]), "Type": "Mass"})
                 if output == "Invalid":
                     del self.clientData[address]
+                    addresses.remove(address)
                     break
             else:
                 continue
