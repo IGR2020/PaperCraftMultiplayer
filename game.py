@@ -31,6 +31,7 @@ class Client:
             self.serverIp = socket.gethostbyname(socket.gethostname())
         self.connection = socket.socket()
 
+
     def receiveData(self):
         self.connection.connect((self.serverIp, defaultPort))
 
@@ -90,13 +91,12 @@ class Server:
         self.ip = socket.gethostbyname(socket.gethostname())
         self.port = defaultPort
 
-        self.serverSocket = socket.socket()
+        self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.serverSocket.bind((self.ip, self.port))
 
         self.clientData = {}
         self.run = True
 
-        self.printQue = []
 
     def clientJoinHandler(self):
         self.serverSocket.listen()
@@ -120,19 +120,17 @@ class Server:
             data = getData(connection)
             if data == "Invalid":
                 continue
+            if data == "Quit":
+                del self.clientData[address]
+                return
             self.handleSentPacket(data, address)
+
+        return
 
     def handleSentPacket(self, data, address):
         ...
 
-    def terminal(self):
-        command = input().lower()
-        if command[0] == "q":
-            self.run = False
-        [print(que) for que in self.printQue]
-
     def start(self):
-        Thread(target=self.terminal).start()
         Thread(target=self.clientJoinHandler).start()
 
         while self.run:

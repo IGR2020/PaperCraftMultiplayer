@@ -1,5 +1,6 @@
 from random import randint
 from threading import Thread
+from time import sleep
 
 from assets import blockSize, massSize
 from game import Client, sendData
@@ -20,6 +21,8 @@ class GameClient(Client):
 
         self.x_offset, self.y_offset = 0, 0
         self.mass = {}
+
+        self.players = {}
 
         self.allocation = [
             (self.x_offset // blockSize // massSize,
@@ -49,6 +52,8 @@ class GameClient(Client):
                 self.mass[mass][block].display(self.window, self.x_offset, self.y_offset)
 
     def quit(self):
+        sendData(self.connection, "Quit")
+        sleep(0.1)
         self.connection.close()
 
     def handleReceivedData(self, data):
